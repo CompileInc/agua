@@ -87,16 +87,20 @@ def list_commands():
 
 
 @cli.command()
-@click.option('--config', help='config for tests', required=True, metavar='<path>')
-@click.option('--file', help='file to evaluate', required=True, metavar='<path>')
+@click.option('--config', default="./agua.yml", help='config for tests', required=True, metavar='<path>')
+@click.option('--test', default="", help='file to evaluate', required=True, metavar='<path>')
 @click.option('--update', help='update input file with results', default=True, is_flag=True)
 @click.option('--format_result', help='output 1/0 instead of True/False in result', default=True, is_flag=True)
-def test(config, file, update, format_result):
+def test(config, test, update, format_result):
     '''Run tests'''
 
     with open(config) as f:
         config = yaml.load(f)
-    with open(file) as f:
+    fname = config['test']
+    if test not in EMPTY_VALUES:
+        fname = test
+    config = config['config']
+    with open(fname) as f:
         r = csv.DictReader(f)
         fieldnames = r.fieldnames
         data = list(r)
@@ -117,9 +121,9 @@ def test(config, file, update, format_result):
             result_column = 'result_%s' % column
             if result_column not in updated_fieldnames:
                 updated_fieldnames.insert(updated_fieldnames.index('test_%s' % column) + 1, result_column)
-        dirname = os.path.dirname(file)
-        basename = os.path.basename(file)
-        new_file = os.path.join(dirname, 'result_%s' % basename)
+        dirname = os.path.dirname(fname)
+        basename = os.path.basename(fname)
+        new_file = os.path.join(dirname, 'agua_result_%s' % basename)
         with open(new_file, 'w') as f:
             w = csv.DictWriter(f, fieldnames=updated_fieldnames)
             w.writeheader()

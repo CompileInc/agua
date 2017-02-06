@@ -62,4 +62,4 @@ docs/_build/
 target/
 
 .venv
-agua_results_*
+agua_result_*
