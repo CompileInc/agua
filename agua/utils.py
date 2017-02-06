@@ -2,6 +2,7 @@ import importlib
 
 from comparators import CHECK_FUNCTIONS
 
+
 def dyn_import(path):
     mods = path.split(".")
     func_name = mods[-1]

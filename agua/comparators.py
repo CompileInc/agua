@@ -1,8 +1,10 @@
 CHECK_FUNCTIONS = {}
 
+
 def register(fn):
     CHECK_FUNCTIONS[fn.func_name] = fn
     return fn
+
 
 @register
 def exact(value, test_value):

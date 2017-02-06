@@ -72,7 +72,8 @@ def print_blocks(label, count, step, args):
 
 
 def init():
-    parser = argparse.ArgumentParser(description='draw basic graphs on terminal')
+    parser = argparse.ArgumentParser(
+        description='draw basic graphs on terminal')
     parser.add_argument('filename', nargs='?', default="-",
                         help='data file name (comma or space separated). Defaults to stdin.')
     parser.add_argument('--width', type=int, default=50,
