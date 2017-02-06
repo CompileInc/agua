@@ -13,7 +13,7 @@ reqs = [str(ir.req) for ir in install_reqs]
 sys.path.insert(0, os.path.dirname(__file__))
 setup(
     name='agua',
-    version='1.0',
+    version='0.1',
     py_modules=['agua', 'termgraph'],
     packages=find_packages(),
     install_requires=reqs,
