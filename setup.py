@@ -1,12 +1,15 @@
+import os
+import sys
+
 from pip.req import parse_requirements
 from pip.download import PipSession
-import sys
-import os
 from setuptools import find_packages
+
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
+
 # reading requirements
 install_reqs = parse_requirements('requirements.txt', session=PipSession())
 reqs = [str(ir.req) for ir in install_reqs]
