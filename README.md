@@ -39,9 +39,11 @@ To compare columns, you may use one of the existing comparators or specify a pyt
 Check out ```agua/comparators.py``` for example comparators.
 
 List built-in comparators with,
+
 ```shell
 agua list
 ```
+
 Any keyword arguments that need to be passed to the comparator may be specified with a `kwargs` parameter
 
 
