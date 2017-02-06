@@ -87,6 +87,7 @@ def list_commands():
 
 
 @cli.command()
+@click.option('--config', help='config for tests', required=True, metavar='<path>')
 @click.option('--file', help='file to evaluate', required=True, metavar='<path>')
 @click.option('--update', help='update input file with results', default=True, is_flag=True)
 @click.option('--format_result', help='output 1/0 instead of True/False in result', default=True, is_flag=True)
