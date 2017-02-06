@@ -1,4 +1,4 @@
-test: test.csv
+test: example.csv
 config:
   name:
     comparator: string_similarity

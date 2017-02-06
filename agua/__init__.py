@@ -1,62 +1,14 @@
-import importlib
 import os
 
 import click
 import unicodecsv as csv
 import yaml
 
-from termgraph import chart
-
-EMPTY_VALUES = (None, '', [], (), {})
-CHECK_FUNCTIONS = {}
-
-
-def register(fn):
-    CHECK_FUNCTIONS[fn.func_name] = fn
-    return fn
-
-
-@register
-def exact(value, test_value):
-    return value == test_value or value is test_value
-
-
-@register
-def approximate(value, test_value, delta):
-    min_value = float(value) * (1 - delta)
-    max_value = float(value) * (1 + delta)
-    return min_value <= float(test_value) <= max_value
-
-
-@register
-def string_similarity(value, test_value, min_score, case_sensitive=True):
-    import fuzzywuzzy.fuzz
-    if not case_sensitive:
-        value = value.lower()
-        test_value = test_value.lower()
-    return fuzzywuzzy.fuzz.ratio(value, test_value) >= min_score
-
-
-def dyn_import(path):
-    mods = path.split(".")
-    func_name = mods[-1]
-    mods = ".".join(mods[:-1])
-    return getattr(importlib.import_module(mods), func_name)
-
-
-def get_check_function(path):
-    if path in CHECK_FUNCTIONS:
-        return CHECK_FUNCTIONS[path]
-    else:
-        return dyn_import(path)
-
-
-def as_percent(n, total):
-    return '%.2f' % (float(n) / total * 100)
-
-
-def label_width(string):
-    return "%14s" % (string)
+from agua.comparators import CHECK_FUNCTIONS
+from agua.termgraph import chart
+from agua.utils import dyn_import, get_check_function, as_percent,\
+                       label_width
+from agua.validators import EMPTY_VALUES
 
 
 def evaluate(data, config):

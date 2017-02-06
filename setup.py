@@ -17,7 +17,6 @@ sys.path.insert(0, os.path.dirname(__file__))
 setup(
     name='agua',
     version='0.1',
-    py_modules=['agua', 'termgraph'],
     packages=find_packages(),
     install_requires=reqs,
     description='Compare data in columns with other columns with the help of comparator functions',

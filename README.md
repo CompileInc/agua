@@ -16,14 +16,33 @@ cd example
 agua test
 ```
 
+```shell
+Test results for example.csv
+        Column: age
+Coverage (4/4): ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇  100.00%
+Accuracy (4/4): ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇  100.00%
+
+        Column: fruit
+Coverage (4/4): ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇  100.00%
+Accuracy (4/4): ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇  100.00%
+
+        Column: name
+Coverage (3/4): ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇   75.00%
+Accuracy (2/3): ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇   66.67%
+```
+
 ## Configuration
 
 Check out ```example/agua.yml``` for configuration options.
 
 To compare columns, you may use one of the existing comparators or specify a python path to a callable.
+Check out ```agua/comparators.py``` for example comparators.
 
 List built-in comparators with,
 ```shell
 agua list
 ```
 Any keyword arguments that need to be passed to the comparator may be specified with a `kwargs` parameter
+
+
+Graphs are printed with [termgraph](https://github.com/mkaz/termgraph)
