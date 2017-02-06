@@ -125,7 +125,7 @@ def test(config, test, update, format_result):
     total = len(data)
     print("Test results for %s" % (fname))
     labels = [label_width('Total'), label_width('Coverage'), label_width('Accuracy')]
-    args = {'width': 50, 'format': '{:>5.0f}', 'suffix': '%', 'verbose': False}
+    args = {'width': 50, 'format': '{:>7.2f}', 'suffix': '%', 'verbose': False}
 
     for column, d in result['result'].items():
         column_str ='\033[1m%s\033[0m' % column
