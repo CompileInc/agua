@@ -52,7 +52,8 @@ def get_check_function(path):
 
 
 def as_percent(n, total):
-    return '%.2f' % (float(n)/total * 100)
+    return '%.2f' % (float(n) / total * 100)
+
 
 def label_width(string):
     return "%14s" % (string)
@@ -109,16 +110,23 @@ def list_commands():
 def test(config, test, update, format_result):
     '''Run tests'''
 
-    with open(config) as f:
-        config = yaml.load(f)
+    try:
+        with open(config) as f:
+            config = yaml.load(f)
+    except IOError:
+        print("Missing config file: %s " % (config))
+        exit()
+
     fname = config.get('test')
     if test not in EMPTY_VALUES:
         fname = test
-    config = config['config']
+
     with open(fname) as f:
         r = csv.DictReader(f)
         fieldnames = r.fieldnames
         data = list(r)
+
+    config = config['config']
 
     result = evaluate(data, config)
 
@@ -142,7 +150,8 @@ def test(config, test, update, format_result):
             result_column = 'agua_result_%s' % column
             if result_column not in updated_fieldnames:
                 test_column = c.get('test_column', 'test_%s' % column)
-                updated_fieldnames.insert(updated_fieldnames.index(test_column) + 1, result_column)
+                updated_fieldnames.insert(
+                    updated_fieldnames.index(test_column) + 1, result_column)
 
         dirname = os.path.dirname(fname)
         basename = os.path.basename(fname)
@@ -155,7 +164,8 @@ def test(config, test, update, format_result):
                 if format_result:
                     for column in config:
                         result_column = 'agua_result_%s' % column
-                        row[result_column] = int(row[result_column]) if row[result_column] not in EMPTY_VALUES else None
+                        row[result_column] = int(row[result_column]) if row[
+                            result_column] not in EMPTY_VALUES else None
                 w.writerow(row)
 
 
