@@ -8,3 +8,4 @@ config:
     kwargs: {'delta': 0.1}
   fruit:
     comparator: exact
+    separator: '\n'

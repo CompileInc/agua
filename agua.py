@@ -61,13 +61,23 @@ def evaluate(data, config):
         test_column = 'test_%s' % column
         result_column = 'result_%s' % column
         column_result = {'attempted': 0, 'success': 0}
+        separator = c.get('separator')
         for row in data:
+            r = None
             if row[test_column] not in EMPTY_VALUES:
                 column_result['attempted'] += 1
-            r = check_function(row[column], row[test_column], **kwargs)
+                test_value = row[test_column]
+                if separator:
+                    base_values = row[column].split(separator)
+                else:
+                    base_values = [row[column]]
+                for base_value in base_values:
+                    r = check_function(base_value, test_value, **kwargs)
+                    if r:
+                        break
+                if r:
+                    column_result['success'] += 1
             row[result_column] = r
-            if r:
-                column_result['success'] += 1
         result[column] = column_result
     return {'data': data, 'result': result}
 
@@ -112,8 +122,8 @@ def test(config, test, update, format_result):
     for column, d in result['result'].items():
         print '=' * 70
         print 'Column: %s' % column
-        print 'Coverage: %s%%' % as_percent(d['attempted'], total)
-        print 'Accuracy: %s%%' % as_percent(d['success'], d['attempted'])
+        print 'Coverage: %s%% (%s/%s)' % (as_percent(d['attempted'], total), d['attempted'], total)
+        print 'Accuracy: %s%% (%s/%s)' % (as_percent(d['success'], d['attempted']), d['success'], d['attempted'])
 
     if update:
         updated_fieldnames = list(fieldnames)
@@ -131,7 +141,7 @@ def test(config, test, update, format_result):
                 if format_result:
                     for column in config:
                         result_column = 'result_%s' % column
-                        row[result_column] = int(row[result_column])
+                        row[result_column] = int(row[result_column]) if row[result_column] not in EMPTY_VALUES else None
                 w.writerow(row)
 
 
