@@ -1,0 +1,8 @@
+name:
+  comparator: string_similarity
+  kwargs: {'min_score': 90}
+age:
+    comparator: approximate
+    kwargs: {'delta': 0.1}
+fruit:
+    comparator: exact

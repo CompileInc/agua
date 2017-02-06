@@ -1,66 +1,134 @@
+import importlib
+import os
+
 import click
-import csv
+import unicodecsv as csv
+import yaml
 
 EMPTY_VALUES = (None, '', [], (), {})
+CHECK_FUNCTIONS = {}
 
-def transform_to_dict(data, key, value):
-    _data = {}
-    for d in data:
-        _data[d[key]] = d[value]
-    return _data
 
-def base_check(base_value, test_value):
-    return base_value == test_value or base_value is test_value
+def register(fn):
+    CHECK_FUNCTIONS[fn.func_name] = fn
+    return fn
 
-def evaluate(base_data, test_data, check_function):
-    _success = []
-    _empty = []
-    _error = []
 
-    for k, v in test_data.items():
-        base_value = base_data[k]
-        if v in EMPTY_VALUES:
-            _empty.append({k: v})
-        elif check_function(base_value, v):
-            _success.append({k: v})
-        else:
-            _error.append({k: v})
-    return {'success': _success,
-            'empty': _empty,
-            'error': _error}
+@register
+def exact(value, test_value):
+    return value == test_value or value is test_value
 
-@click.command()
-@click.option('--base', help='Base file to compare against')
-@click.option('--test', help='Result file to evaluate')
-@click.option('--key', default='id', help='Key')
-@click.option('--value', default='value', help='Value')
-@click.option('--func', help='Comparison function')
-def test(base, test, key, value, func):
-    with open(base) as f:
-        base_data = transform_to_dict(csv.DictReader(f), key, value)
-    with open(test) as f:
-        test_data = transform_to_dict(csv.DictReader(f), key, value)
 
-    if func in EMPTY_VALUES:
-        check_function = base_check
+@register
+def approximate(value, test_value, delta):
+    min_value = float(value) * (1 - delta)
+    max_value = float(value) * (1 + delta)
+    return min_value <= float(test_value) <= max_value
+
+
+@register
+def string_similarity(value, test_value, min_score, case_sensitive=True):
+    import fuzzywuzzy.fuzz
+    if not case_sensitive:
+        value = value.lower()
+        test_value = test_value.lower()
+    return fuzzywuzzy.fuzz.ratio(value, test_value) >= min_score
+
+
+def dyn_import(path):
+    mods = path.split(".")
+    func_name = mods[-1]
+    mods = ".".join(mods[:-1])
+    return getattr(importlib.import_module(mods), func_name)
+
+
+def get_check_function(path):
+    if path in CHECK_FUNCTIONS:
+        return CHECK_FUNCTIONS[path]
     else:
-        mods = func.split(".")
-        func_name = mods[-1]
-        mods = ".".join(mods[:-1])
-        check_function = getattr(__import__(mods), func_name)
+        return dyn_import(path)
 
-    result = evaluate(base_data, test_data, check_function)
-    total = len(test_data)
 
-    def get_result(key, result, total):
-        return len(result[key])/float(total) * 100
+def as_percent(n, total):
+    return '%.2f' % (float(n)/total * 100)
 
-    print "Total: %s" % (total)
-    print "Success: %s%%" % (get_result('success', result, total))
-    print "Empty: %s%%" % (get_result('empty', result, total))
-    print "Error: %s%%" % (get_result('error', result, total))
+
+def evaluate(data, config):
+    result = {}
+    for column, c in config.items():
+        check_function = get_check_function(c['comparator'])
+        kwargs = c.get('kwargs', {})
+        test_column = 'test_%s' % column
+        result_column = 'result_%s' % column
+        column_result = {'attempted': 0, 'success': 0}
+        for row in data:
+            if row[test_column] not in EMPTY_VALUES:
+                column_result['attempted'] += 1
+            r = check_function(row[column], row[test_column], **kwargs)
+            row[result_column] = r
+            if r:
+                column_result['success'] += 1
+        result[column] = column_result
+    return {'data': data, 'result': result}
+
+
+@click.group()
+def cli():
+    '''
+    Compare data in columns with other columns with
+    the help of comparator functions
+    '''
+
+
+@cli.command('list')
+def list_commands():
+    '''List built-in check functions'''
+    click.echo('\n'.join(f for f in CHECK_FUNCTIONS))
+
+
+@cli.command()
+@click.option('--file', help='file to evaluate', required=True, metavar='<path>')
+@click.option('--update', help='update input file with results', default=True, is_flag=True)
+@click.option('--format_result', help='output 1/0 instead of True/False in result', default=True, is_flag=True)
+def test(config, file, update, format_result):
+    '''Run tests'''
+
+    with open(config) as f:
+        config = yaml.load(f)
+    with open(file) as f:
+        r = csv.DictReader(f)
+        fieldnames = r.fieldnames
+        data = list(r)
+
+    result = evaluate(data, config)
+
+    total = len(data)
+    print "Total: %s" % total
+    for column, d in result['result'].items():
+        print '=' * 70
+        print 'Column: %s' % column
+        print 'Coverage: %s%%' % as_percent(d['attempted'], total)
+        print 'Accuracy: %s%%' % as_percent(d['success'], d['attempted'])
+
+    if update:
+        updated_fieldnames = list(fieldnames)
+        for column in config:
+            result_column = 'result_%s' % column
+            if result_column not in updated_fieldnames:
+                updated_fieldnames.insert(updated_fieldnames.index('test_%s' % column) + 1, result_column)
+        dirname = os.path.dirname(file)
+        basename = os.path.basename(file)
+        new_file = os.path.join(dirname, 'result_%s' % basename)
+        with open(new_file, 'w') as f:
+            w = csv.DictWriter(f, fieldnames=updated_fieldnames)
+            w.writeheader()
+            for row in result['data']:
+                if format_result:
+                    for column in config:
+                        result_column = 'result_%s' % column
+                        row[result_column] = int(row[result_column])
+                w.writerow(row)
 
 
 if __name__ == '__main__':
-    test()
-
+    cli()

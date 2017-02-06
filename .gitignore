@@ -61,6 +61,5 @@ docs/_build/
 # PyBuilder
 target/
 
-*.csv
-*.json
 .venv
+agua_results_*
