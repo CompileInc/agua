@@ -106,7 +106,7 @@ def test(config, test, update, format_result):
 
     with open(config) as f:
         config = yaml.load(f)
-    fname = config['test']
+    fname = config.get('test')
     if test not in EMPTY_VALUES:
         fname = test
     config = config['config']
