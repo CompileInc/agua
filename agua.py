@@ -5,6 +5,8 @@ import click
 import unicodecsv as csv
 import yaml
 
+from termgraph import chart
+
 EMPTY_VALUES = (None, '', [], (), {})
 CHECK_FUNCTIONS = {}
 
@@ -52,6 +54,9 @@ def get_check_function(path):
 def as_percent(n, total):
     return '%.2f' % (float(n)/total * 100)
 
+def label_width(string):
+    return "%8s" % (string)
+
 
 def evaluate(data, config):
     result = {}
@@ -97,7 +102,7 @@ def list_commands():
 
 
 @cli.command()
-@click.option('--config', default="./agua.yml", help='config for tests', required=True, metavar='<path>')
+@click.option('--config', default="agua.yml", help='config for tests', required=True, metavar='<path>')
 @click.option('--test', default="", help='file to evaluate', required=True, metavar='<path>')
 @click.option('--update', help='update input file with results', default=True, is_flag=True)
 @click.option('--format_result', help='output 1/0 instead of True/False in result', default=True, is_flag=True)
@@ -118,12 +123,16 @@ def test(config, test, update, format_result):
     result = evaluate(data, config)
 
     total = len(data)
-    print "Total: %s" % total
+    print("Test results for %s" % (fname))
+    labels = [label_width('Total'), label_width('Coverage'), label_width('Accuracy')]
+    args = {'width': 50, 'format': '{:>5.0f}', 'suffix': '%', 'verbose': False}
+
     for column, d in result['result'].items():
-        print '=' * 70
-        print 'Column: %s' % column
-        print 'Coverage: %s%% (%s/%s)' % (as_percent(d['attempted'], total), d['attempted'], total)
-        print 'Accuracy: %s%% (%s/%s)' % (as_percent(d['success'], d['attempted']), d['success'], d['attempted'])
+        column_str ='\033[1m%s\033[0m' % column
+        print(column_str.center(args['width'], "="))
+        data = [100, as_percent(d['attempted'], total), as_percent(d['success'], d['attempted'])]
+        data = map(float, data)
+        chart(labels, data, args)
 
     if update:
         updated_fieldnames = list(fieldnames)
