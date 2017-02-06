@@ -3,6 +3,7 @@ config:
   name:
     comparator: string_similarity
     kwargs: {'min_score': 90}
+    test_column: final_name
   age:
     comparator: approximate
     kwargs: {'delta': 0.1}

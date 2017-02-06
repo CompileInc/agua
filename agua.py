@@ -63,7 +63,7 @@ def evaluate(data, config):
     for column, c in config.items():
         check_function = get_check_function(c['comparator'])
         kwargs = c.get('kwargs', {})
-        test_column = 'test_%s' % column
+        test_column = c.get('test_column', 'test_%s' % column)
         result_column = 'result_%s' % column
         column_result = {'attempted': 0, 'success': 0}
         separator = c.get('separator')
@@ -136,13 +136,17 @@ def test(config, test, update, format_result):
 
     if update:
         updated_fieldnames = list(fieldnames)
-        for column in config:
+
+        for column, c in config.items():
             result_column = 'result_%s' % column
             if result_column not in updated_fieldnames:
-                updated_fieldnames.insert(updated_fieldnames.index('test_%s' % column) + 1, result_column)
+                test_column = c.get('test_column', 'test_%s' % column)
+                updated_fieldnames.insert(updated_fieldnames.index(test_column) + 1, result_column)
+
         dirname = os.path.dirname(fname)
         basename = os.path.basename(fname)
         new_file = os.path.join(dirname, 'agua_result_%s' % basename)
+
         with open(new_file, 'w') as f:
             w = csv.DictWriter(f, fieldnames=updated_fieldnames)
             w.writeheader()
