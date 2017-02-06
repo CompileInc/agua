@@ -21,6 +21,9 @@ setup(
     install_requires=reqs,
     description='Compare data in columns with other columns with the help of comparator functions',
     long_description='Compare data in columns with other columns with the help of comparator functions',
+    keywords = ['agua', 'testing', 'data', 'csv'],
+    url='https://github.com/CompileInc/agua',
+    download_url = 'https://github.com/CompileInc/agua/archive/v{version}.tar.gz'.format(version=version),
     entry_points='''
         [console_scripts]
         agua=agua:cli
