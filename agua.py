@@ -55,7 +55,7 @@ def as_percent(n, total):
     return '%.2f' % (float(n)/total * 100)
 
 def label_width(string):
-    return "%8s" % (string)
+    return "%14s" % (string)
 
 
 def evaluate(data, config):
@@ -124,13 +124,14 @@ def test(config, test, update, format_result):
 
     total = len(data)
     print("Test results for %s" % (fname))
-    labels = [label_width('Total'), label_width('Coverage'), label_width('Accuracy')]
-    args = {'width': 50, 'format': '{:>7.2f}', 'suffix': '%', 'verbose': False}
+    args = {'width': 50, 'format': '{:>8.2f}', 'suffix': '%', 'verbose': False}
 
     for column, d in result['result'].items():
-        column_str ='\033[1m%s\033[0m' % column
-        print(column_str.center(args['width'], "="))
-        data = [100, as_percent(d['attempted'], total), as_percent(d['success'], d['attempted'])]
+        print(label_width('Column') + ': ' + column)
+        labels = [label_width('Coverage (%s/%s)' % (d['attempted'], total)),
+                  label_width('Accuracy (%s/%s)' % (d['success'], d['attempted']))]
+        data = [as_percent(d['attempted'], total),
+                as_percent(d['success'], d['attempted'])]
         data = map(float, data)
         chart(labels, data, args)
 
