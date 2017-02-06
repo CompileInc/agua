@@ -64,7 +64,7 @@ def evaluate(data, config):
         check_function = get_check_function(c['comparator'])
         kwargs = c.get('kwargs', {})
         test_column = c.get('test_column', 'test_%s' % column)
-        result_column = 'result_%s' % column
+        result_column = 'agua_result_%s' % column
         column_result = {'attempted': 0, 'success': 0}
         separator = c.get('separator')
         for row in data:
@@ -139,7 +139,7 @@ def test(config, test, update, format_result):
         updated_fieldnames = list(fieldnames)
 
         for column, c in config.items():
-            result_column = 'result_%s' % column
+            result_column = 'agua_result_%s' % column
             if result_column not in updated_fieldnames:
                 test_column = c.get('test_column', 'test_%s' % column)
                 updated_fieldnames.insert(updated_fieldnames.index(test_column) + 1, result_column)
@@ -154,7 +154,7 @@ def test(config, test, update, format_result):
             for row in result['data']:
                 if format_result:
                     for column in config:
-                        result_column = 'result_%s' % column
+                        result_column = 'agua_result_%s' % column
                         row[result_column] = int(row[result_column]) if row[result_column] not in EMPTY_VALUES else None
                 w.writerow(row)
 
