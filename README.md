@@ -16,4 +16,14 @@ cd example
 agua test
 ```
 
-Check out ```example/agua.yml``` for configuration options
+## Configuration
+
+Check out ```example/agua.yml``` for configuration options.
+
+To compare columns, you may use one of the existing comparators or specify a python path to a callable.
+
+List built-in comparators with,
+```shell
+agua list
+```
+Any keyword arguments that need to be passed to the comparator may be specified with a `kwargs` parameter
