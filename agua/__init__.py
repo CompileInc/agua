@@ -1,5 +1,3 @@
-import os
-
 import click
 import unicodecsv as csv
 import yaml
@@ -7,7 +5,7 @@ import yaml
 from agua.comparators import CHECK_FUNCTIONS
 from agua.evaluate import evaluate
 from agua.termgraph import chart as termchart
-from agua.utils import as_percent, label_width
+from agua.utils import as_percent, label_width, get_result_filename
 from agua.validators import EMPTY_VALUES
 
 
@@ -76,10 +74,7 @@ def test(config, test, update, format_result):
                 updated_fieldnames.insert(
                     updated_fieldnames.index(test_column) + 1, result_column)
 
-        dirname = os.path.dirname(fname)
-        basename = os.path.basename(fname)
-        new_file = os.path.join(dirname, 'agua_result_%s' % basename)
-
+        new_file = get_result_filename(fname)
         with open(new_file, 'w') as f:
             w = csv.DictWriter(f, fieldnames=updated_fieldnames)
             w.writeheader()
