@@ -67,7 +67,8 @@ def test(config, test, update, format_result):
     if update:
         updated_fieldnames = list(fieldnames)
 
-        for column, c in config.items():
+        for c in config:
+            column = c['base_column']
             result_column = 'agua_result_%s' % column
             if result_column not in updated_fieldnames:
                 test_column = c.get('test_column', 'test_%s' % column)
@@ -80,7 +81,8 @@ def test(config, test, update, format_result):
             w.writeheader()
             for row in result['data']:
                 if format_result:
-                    for column in config:
+                    for c in config:
+                        column = c['base_column']
                         result_column = 'agua_result_%s' % column
                         row[result_column] = int(row[result_column]) if row[
                             result_column] not in EMPTY_VALUES else None

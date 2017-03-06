@@ -4,7 +4,8 @@ from agua.validators import EMPTY_VALUES
 
 def evaluate(data, config):
     result = {}
-    for column, c in config.items():
+    for c in config:
+        column = c['base_column']
         check_function = get_check_function(c['comparator'])
         kwargs = c.get('kwargs', {})
         test_column = c.get('test_column', 'test_%s' % column)

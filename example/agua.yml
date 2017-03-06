@@ -1,12 +1,12 @@
 test: example.csv
 config:
-  name:
+  - base_column: name
+    test_column: final_name
     comparator: string_similarity
     kwargs: {'min_score': 90}
-    test_column: final_name
-  age:
+  - base_column: age
     comparator: approximate
     kwargs: {'delta': 0.1}
-  fruit:
+  - base_column: fruit
     comparator: exact
     separator: '\n'
