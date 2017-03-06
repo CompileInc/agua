@@ -55,8 +55,11 @@ def test(config, test, update, format_result):
     print("Test results for %s" % (fname))
     args = {'width': 50, 'format': '{:>8.2f}', 'suffix': '%', 'verbose': False}
 
-    for column, d in result['result'].items():
-        print(label_width('Column') + ': ' + column)
+    for i, d in enumerate(result['result']):
+        c = config[i]
+        column = c['base_column']
+        test_column = c.get('test_column', 'test_%s' % column)
+        print(label_width('Column') + ': %s vs %s' % (column, test_column))
         labels = [label_width('Coverage (%s/%s)' % (d['attempted'], total)),
                   label_width('Accuracy (%s/%s)' % (d['success'], d['attempted']))]
         data = [as_percent(d['attempted'], total),

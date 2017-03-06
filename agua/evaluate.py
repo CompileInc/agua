@@ -3,8 +3,8 @@ from agua.validators import EMPTY_VALUES
 
 
 def evaluate(data, config):
-    result = {}
-    for c in config:
+    result = [None] * len(config)
+    for i, c in enumerate(config):
         column = c['base_column']
         check_function = get_check_function(c['comparator'])
         kwargs = c.get('kwargs', {})
@@ -28,5 +28,5 @@ def evaluate(data, config):
                 if r:
                     column_result['success'] += 1
             row[result_column] = r
-        result[column] = column_result
+        result[i] = column_result
     return {'data': data, 'result': result}
