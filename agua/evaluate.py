@@ -9,7 +9,7 @@ def evaluate(data, config):
         check_function = get_check_function(c['comparator'])
         kwargs = c.get('kwargs', {})
         test_column = c.get('test_column', 'test_%s' % column)
-        result_column = 'agua_result_%s' % column
+        result_column = 'agua_result_%s' % test_column
         column_result = {'attempted': 0, 'success': 0}
         separator = c.get('separator')
         for row in data:
