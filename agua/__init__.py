@@ -61,10 +61,9 @@ class Agua(object):
             updated_fieldnames = list(fieldnames)
 
             for c in config:
-                column = c['base_column']
-                result_column = 'agua_result_%s' % column
+                test_column = c.get('test_column', 'test_%s' % column)
+                result_column = 'agua_result_%s' % test_column
                 if result_column not in updated_fieldnames:
-                    test_column = c.get('test_column', 'test_%s' % column)
                     updated_fieldnames.insert(
                         updated_fieldnames.index(test_column) + 1, result_column)
 
@@ -75,7 +74,7 @@ class Agua(object):
                 for row in result['data']:
                     if format_result:
                         for c in config:
-                            column = c['base_column']
+                            column = c['test_column']
                             result_column = 'agua_result_%s' % column
                             row[result_column] = int(row[result_column]) if row[
                                 result_column] not in EMPTY_VALUES else None
