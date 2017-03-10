@@ -64,7 +64,7 @@ def print_blocks(label, count, step, args):
     try:
         blocks = int(count / step)
     except ZeroDivisionError:
-        pass
+        sys.stdout.write(sm_tick)
     else:
         if count < step:
             sys.stdout.write(sm_tick)
