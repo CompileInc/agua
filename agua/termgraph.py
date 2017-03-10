@@ -60,12 +60,12 @@ def chart(labels, data, args):
 
 def print_blocks(label, count, step, args):
     # TODO: add flag to hide data labels
+    print("{}: ".format(label), end="")
     try:
         blocks = int(count / step)
     except ZeroDivisionError:
         pass
     else:
-        print("{}: ".format(label), end="")
         if count < step:
             sys.stdout.write(sm_tick)
         else:
