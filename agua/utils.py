@@ -19,7 +19,10 @@ def get_check_function(path):
 
 
 def as_percent(n, total):
-    return '%.2f' % (float(n) / total * 100)
+    try:
+        return '%.2f' % (float(n) / total * 100)
+    except ZeroDivisionError:
+        return '0.00'
 
 
 def label_width(string):
