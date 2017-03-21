@@ -55,7 +55,7 @@ class Agua(object):
             data = [as_percent(d['attempted'], total),
                     as_percent(d['success'], d['attempted'])]
             data = map(float, data)
-            termchart(labels, data, args)
+            termchart(labels, data, args, max_limit=100)
 
         if update:
             updated_fieldnames = list(fieldnames)
