@@ -35,7 +35,7 @@ def main(args):
     chart(labels, data, args)
 
 
-def chart(labels, data, args):
+def chart(labels, data, args, max_limit=0):
 
     # verify data
     m = len(labels)
@@ -43,14 +43,9 @@ def chart(labels, data, args):
         print(">> Error: Label and data array sizes don't match")
         sys.exit(1)
 
-    # massage data
-    # normalize for graph
-    max = 0
-    for i in range(m):
-        if data[i] > max:
-            max = data[i]
+    max_limit = max(max_limit, max(data))
 
-    step = max / args['width']
+    step = max_limit / args['width']
     # display graph
     for i in range(m):
         print_blocks(labels[i], data[i], step, args)
