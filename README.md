@@ -47,4 +47,4 @@ agua list
 Any keyword arguments that need to be passed to the comparator may be specified with a `kwargs` parameter
 
 
-Graphs are printed with [termgraph](https://github.com/mkaz/termgraph)
+Graphs are printed with a slightly modified version of [termgraph](https://github.com/mkaz/termgraph)
