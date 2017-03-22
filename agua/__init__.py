@@ -61,6 +61,7 @@ class Agua(object):
             updated_fieldnames = list(fieldnames)
 
             for c in config:
+                column = c['base_column']
                 test_column = c.get('test_column', 'test_%s' % column)
                 if 'test_column' not in c:
                     c['test_column'] = test_column
