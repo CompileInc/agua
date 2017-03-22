@@ -62,6 +62,9 @@ class Agua(object):
 
             for c in config:
                 test_column = c.get('test_column', 'test_%s' % column)
+                if 'test_column' not in c:
+                    c['test_column'] = test_column
+
                 result_column = 'agua_result_%s' % test_column
                 if result_column not in updated_fieldnames:
                     updated_fieldnames.insert(
