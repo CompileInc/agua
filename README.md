@@ -1,5 +1,5 @@
 ![Agua](./logo.png?raw=true)
-# Agua
+# Agua [![PyPI](https://img.shields.io/pypi/v/agua.svg?maxAge=2592000?style=plastic)](https://pypi.python.org/pypi/agua/)
 
 A system that helps you test the coverage and accuracy of your data applications.
 
