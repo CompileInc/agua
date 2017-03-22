@@ -1,3 +1,4 @@
+from agua.config import get_btr_columns
 from agua.utils import get_check_function
 from agua.validators import EMPTY_VALUES
 
@@ -6,11 +7,9 @@ def evaluate(data, config):
     result = [None] * len(config)
 
     for i, c in enumerate(config):
-        column = c['base_column']
+        column, test_column, result_column = get_btr_columns(config[i])
         check_function = get_check_function(c['comparator'])
         kwargs = c.get('kwargs', {})
-        test_column = c.get('test_column', 'test_%s' % column)
-        result_column = 'agua_result_%s' % test_column
         column_result = {'attempted': 0, 'success': 0}
         separator = c.get('separator')
 

@@ -3,6 +3,7 @@ import unicodecsv as csv
 import yaml
 
 from agua.comparators import CHECK_FUNCTIONS
+from agua.config import clean_config, get_btr_columns
 from agua.evaluate import evaluate
 from agua.termgraph import chart as termchart
 from agua.utils import as_percent, label_width, get_result_filename
@@ -37,7 +38,7 @@ class Agua(object):
             fieldnames = r.fieldnames
             data = list(r)
 
-        config = config['config']
+        config = clean_config(config['config'])
 
         result = evaluate(data, config)
 
@@ -46,9 +47,7 @@ class Agua(object):
         args = {'width': 50, 'format': '{:>8.2f}', 'suffix': '%', 'verbose': False}
 
         for i, d in enumerate(result['result']):
-            c = config[i]
-            column = c['base_column']
-            test_column = c.get('test_column', 'test_%s' % column)
+            column, test_column, result_column = get_btr_columns(config[i])
             print(label_width('Column') + ': %s vs %s' % (column, test_column))
             labels = [label_width('Coverage (%s/%s)' % (d['attempted'], total)),
                       label_width('Accuracy (%s/%s)' % (d['success'], d['attempted']))]
@@ -61,12 +60,7 @@ class Agua(object):
             updated_fieldnames = list(fieldnames)
 
             for c in config:
-                column = c['base_column']
-                test_column = c.get('test_column', 'test_%s' % column)
-                if 'test_column' not in c:
-                    c['test_column'] = test_column
-
-                result_column = 'agua_result_%s' % test_column
+                column, test_column, result_column = get_btr_columns(c)
                 if result_column not in updated_fieldnames:
                     updated_fieldnames.insert(
                         updated_fieldnames.index(test_column) + 1, result_column)
@@ -78,8 +72,7 @@ class Agua(object):
                 for row in result['data']:
                     if format_result:
                         for c in config:
-                            column = c['test_column']
-                            result_column = 'agua_result_%s' % column
+                            column, test_column, result_column = get_btr_columns(c)
                             row[result_column] = int(row[result_column]) if row[
                                 result_column] not in EMPTY_VALUES else None
                     w.writerow(row)
