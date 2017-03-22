@@ -1,4 +1,4 @@
-![Agua](./logo.svg)
+![Agua](./logo.png?raw=true)
 # Agua
 
 A system that helps you test the coverage and accuracy of your data applications.

@@ -20,6 +20,7 @@ setup(
     version=version,
     packages=find_packages(),
     install_requires=reqs,
+    license='MIT',
     description='Compare data in columns with other columns with the help of comparator functions',
     long_description='Compare data in columns with other columns with the help of comparator functions',
     keywords = ['agua', 'testing', 'data', 'csv'],
