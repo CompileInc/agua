@@ -1,4 +1,4 @@
-fire==0.1.2
+fire==0.4.0
 fuzzywuzzy==0.16.0
 PyYAML==3.12
 python-Levenshtein==0.12.0
